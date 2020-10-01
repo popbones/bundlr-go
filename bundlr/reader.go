@@ -111,7 +111,7 @@ func (r *Reader) getNextDecoderIfNeeded() error {
 			return err
 		}
 
-		decoder, err := r.bundle.DecoderMaker.Make(f)
+		decoder, err := r.bundle.decoderMaker.Make(f)
 		if err != nil {
 			if err := f.Close(); err != nil {
 				return err

@@ -103,7 +103,7 @@ func (w *Writer) getNewEncoderIfNeeded() error {
 			return err
 		}
 
-		encoder, err := w.bundle.EncoderMaker.Make(f)
+		encoder, err := w.bundle.encoderMaker.Make(f)
 		if err != nil {
 			if err := f.Close(); err != nil {
 				return err
@@ -121,7 +121,7 @@ func (w *Writer) nextFileName() string {
 }
 
 func (w *Writer) currentFileName() string {
-	return fmt.Sprintf(DefaultDataFileNameFormat, w.partIndex, DefaultDataFileExt)
+	return fmt.Sprintf(DefaultDataFileNameFormat, w.partIndex, w.bundle.fileExtension)
 }
 
 func (w *Writer) nextFile() (File, error) {

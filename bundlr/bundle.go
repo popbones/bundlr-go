@@ -13,25 +13,57 @@ const DefaultDataFileNameFormat = "part-%05d.%s"
 const DefaultDataFileExt = "dat"
 
 type Bundle struct {
-	rw           sync.RWMutex
-	fs           afero.Fs
-	dataFs       afero.Fs
-	EncoderMaker EncoderMaker
-	DecoderMaker DecoderMaker
+	rw            sync.RWMutex
+	fs            afero.Fs
+	dataFs        afero.Fs
+	encoderMaker  EncoderMaker
+	decoderMaker  DecoderMaker
+	fileExtension string // Default file extension to use when writing
+	partSize      uint64 // Default partition size when writing
 }
 
-func NewBundle(fs afero.Fs, path string) (*Bundle, error) {
+func OpenBundle(fs afero.Fs, path string) (*Bundle, error) {
 	fs = afero.NewBasePathFs(fs, path)
 	return &Bundle{
-		fs:           fs,
-		dataFs:       afero.NewBasePathFs(fs, DataDir),
-		EncoderMaker: plainTextEncoderMaker,
-		DecoderMaker: plainTextDecoderMaker,
+		fs:            fs,
+		dataFs:        afero.NewBasePathFs(fs, DataDir),
+		encoderMaker:  plainTextEncoderMaker,
+		decoderMaker:  plainTextDecoderMaker,
+		fileExtension: "txt",
+		partSize:      DefaultPartSize,
 	}, nil
 }
 
+func (b *Bundle) WithEncoderMaker(maker EncoderMaker) *Bundle {
+	b.rw.Lock()
+	b.encoderMaker = maker
+	b.rw.Unlock()
+	return b
+}
+
+func (b *Bundle) WithDecoderMaker(maker DecoderMaker) *Bundle {
+	b.rw.Lock()
+	b.decoderMaker = maker
+	b.rw.Unlock()
+	return b
+}
+
+func (b *Bundle) WithPartSize(n uint64) *Bundle {
+	b.rw.Lock()
+	b.partSize = n
+	b.rw.Unlock()
+	return b
+}
+
+func (b *Bundle) WithFileExtension(ext string) *Bundle {
+	b.rw.Lock()
+	b.fileExtension = ext
+	b.rw.Unlock()
+	return b
+}
+
 func (b *Bundle) Writer() (*Writer, error) {
-	return b.WriterWithPartSize(DefaultPartSize)
+	return b.WriterWithPartSize(b.partSize)
 }
 
 func (b *Bundle) WriterWithPartSize(n uint64) (*Writer, error) {

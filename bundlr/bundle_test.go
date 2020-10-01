@@ -12,8 +12,9 @@ import (
 func TestBundle_WriteReadDelete(t *testing.T) {
 	const numOfRecords = 10 * 2
 
-	bundle, err := NewBundle(afero.NewOsFs(), "test.bundle")
-	assert.NoError(t, err, "NewBundle(...)")
+	bundle, err := OpenBundle(afero.NewOsFs(), "test.bundle")
+	assert.NoError(t, err, "OpenBundle(...)")
+	bundle = bundle.WithFileExtension("txt").WithPartSize(10)
 
 	// Write
 	writer, err := bundle.WriterWithPartSize(2)
