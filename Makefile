@@ -1,6 +1,6 @@
 PACKAGES=`go list ./...`
 
 test:
-	go test -v -cover ${PACKAGES}
+	go test -v -race -coverprofile=coverage.txt -covermode=atomic -cover ${PACKAGES}
 
 .PHONEY: test
