@@ -8,7 +8,6 @@ import (
 
 var plainTextEncoderMaker = (EncoderMakerFunc)(func(f File) (Encoder, error) {
 	return &EncoderClosure{
-		ExtensionString: "txt",
 		EncodeFunc: func(record interface{}) error {
 			switch v := record.(type) {
 			case []byte:

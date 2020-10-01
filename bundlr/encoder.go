@@ -1,22 +1,13 @@
 package bundlr
 
 type Encoder interface {
-	Extension() string
 	Encode(record interface{}) error
 	Close() error
 }
 
 type EncoderClosure struct {
-	ExtensionString string
-	EncodeFunc      func(record interface{}) error
-	CloseFunc       func() error
-}
-
-func (c *EncoderClosure) Extension() string {
-	if c.ExtensionString == "" {
-		return DefaultDataFileExt
-	}
-	return c.ExtensionString
+	EncodeFunc func(record interface{}) error
+	CloseFunc  func() error
 }
 
 func (c *EncoderClosure) Encode(record interface{}) error {
