@@ -11,10 +11,17 @@ var plainTextEncoderMaker = (EncoderMakerFunc)(func(f File) (Encoder, error) {
 		EncodeFunc: func(record interface{}) error {
 			switch v := record.(type) {
 			case []byte:
+				if v[len(v)-1] != '\n' {
+					v = append(v, '\n')
+				}
 				_, err := f.Write(v)
 				return err
 			case string:
-				_, err := f.Write([]byte(v))
+				b := []byte(v)
+				if b[len(b)-1] != '\n' {
+					b = append(b, '\n')
+				}
+				_, err := f.Write(b)
 				return err
 			default:
 				return errors.New("unexpected input")

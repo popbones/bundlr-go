@@ -21,7 +21,7 @@ func TestBundle_WriteReadDelete(t *testing.T) {
 	assert.NoError(t, err, "bundle.Writer()")
 
 	for i := 0; i < numOfRecords; i++ {
-		assert.NoError(t, writer.Write(fmt.Sprintf("testdata_%05d\n", i)), "writer.Write(...)")
+		assert.NoError(t, writer.Write(fmt.Sprintf("testdata_%05d", i)), "writer.Write(...)")
 	}
 	assert.NoError(t, writer.Close(), "writer.Close()")
 
@@ -44,5 +44,4 @@ func TestBundle_WriteReadDelete(t *testing.T) {
 
 	// Delete
 	assert.NoError(t, bundle.Delete(), "bundle.Delete()")
-
 }
