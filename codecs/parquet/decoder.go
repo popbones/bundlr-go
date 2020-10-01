@@ -49,11 +49,6 @@ type Decoder struct {
 	rc    int64
 }
 
-type Student struct {
-	Name string `parquet:"name=name, type=UTF8"`
-	Age  int32  `parquet:"name=age, type=INT32"`
-}
-
 func (e *Decoder) Decode(record interface{}) error {
 	e.mu.Lock()
 	if e.count == e.rc {

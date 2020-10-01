@@ -11,6 +11,11 @@ import (
 	"github.com/popbones/bundlr-go/bundlr"
 )
 
+type Student struct {
+	Name string `parquet:"name=name, type=UTF8"`
+	Age  int32  `parquet:"name=age, type=INT32"`
+}
+
 func TestWriteReadDelete(t *testing.T) {
 	const numOfRecords = 10 * 2
 
