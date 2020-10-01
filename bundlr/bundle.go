@@ -32,7 +32,7 @@ func OpenBundle(fs afero.Fs, path string) (*Bundle, error) {
 		dataFs:        afero.NewBasePathFs(fs, DataDir),
 		encoderMaker:  plainTextEncoderMaker,
 		decoderMaker:  plainTextDecoderMaker,
-		fileExtension: "txt",
+		fileExtension: DefaultDataFileExt,
 		partSize:      DefaultPartSize,
 	}, nil
 }
