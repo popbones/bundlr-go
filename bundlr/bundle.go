@@ -8,9 +8,12 @@ import (
 	"github.com/spf13/afero"
 )
 
-const DataDir = "Data"
-const DefaultDataFileNameFormat = "part-%05d.%s"
-const DefaultDataFileExt = "dat"
+const (
+	DataDir                   = "Data"
+	DefaultDataFileNameFormat = "part-%05d.%s"
+	DefaultDataFileExt        = "dat"
+	DefaultPartSize           = 1000 * 1000
+)
 
 type Bundle struct {
 	rw            sync.RWMutex

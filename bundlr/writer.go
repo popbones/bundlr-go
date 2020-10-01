@@ -9,8 +9,6 @@ import (
 
 var ErrWriterClosed = errors.New("writer closed")
 
-const DefaultPartSize = 1000
-
 type Writer struct {
 	bundle       *Bundle
 	encoder      Encoder
