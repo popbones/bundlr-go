@@ -4,7 +4,6 @@ import (
 	"io"
 	"sync"
 
-	"github.com/spf13/afero"
 	"github.com/xitongsys/parquet-go/reader"
 	"github.com/xitongsys/parquet-go/source"
 
@@ -12,15 +11,15 @@ import (
 )
 
 type DecoderMaker struct {
-	fs        afero.Fs
+	bundle    *bundlr.Bundle
 	np        int64
 	prototype interface{}
 }
 
-func NewDecoderMaker(fs afero.Fs) *DecoderMaker {
+func NewDecoderMaker(b *bundlr.Bundle) *DecoderMaker {
 	return &DecoderMaker{
-		fs: fs,
-		np: 4,
+		bundle: b,
+		np:     4,
 	}
 }
 
@@ -30,7 +29,7 @@ func (m *DecoderMaker) WithPrototype(proto interface{}) *DecoderMaker {
 }
 
 func (m *DecoderMaker) Make(f bundlr.File) (bundlr.Decoder, error) {
-	pf := NewParquetFile(m.fs, f)
+	pf := NewParquetFile(m.bundle.FS(), f)
 	pr, err := reader.NewParquetReader(pf, m.prototype, m.np)
 	if err != nil {
 		return nil, err

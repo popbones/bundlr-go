@@ -7,6 +7,11 @@ import (
 	"github.com/popbones/bundlr-go/bundlr"
 )
 
+func ConfigBundle(b *bundlr.Bundle) *bundlr.Bundle {
+	return b.WithFileExtension("csv").
+		WithEncoderMaker(EncoderMaker).WithDecoderMaker(DecoderMaker)
+}
+
 var EncoderMaker = (bundlr.EncoderMakerFunc)(func(f bundlr.File) (bundlr.Encoder, error) {
 	w := csv.NewWriter(f)
 

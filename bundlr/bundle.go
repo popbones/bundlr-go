@@ -92,7 +92,7 @@ func (b *Bundle) DataFS() afero.Fs {
 }
 
 func (b *Bundle) lsDataDir() ([]os.FileInfo, error) {
-	return afero.ReadDir(b.fs, DataDir)
+	return afero.ReadDir(b.dataFs, "")
 }
 
 func (b *Bundle) lsDataDirSorted() ([]os.FileInfo, error) {

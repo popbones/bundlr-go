@@ -17,9 +17,7 @@ func TestWriteReadDelete(t *testing.T) {
 	fs := afero.NewOsFs()
 	bundle, err := bundlr.OpenBundle(fs, "parquetTest.bundle")
 	assert.NoError(t, err, "OpenBundle(...)")
-	bundle = bundle.WithFileExtension("parquet").
-		WithEncoderMaker(NewEncoderMaker(bundle.DataFS()).WithPrototype(new(Student))).
-		WithDecoderMaker(NewDecoderMaker(bundle.FS()).WithPrototype(new(Student)))
+	bundle = ConfigBundle(bundle, new(Student))
 
 	// Write
 	writer, err := bundle.WriterWithPartSize(2)

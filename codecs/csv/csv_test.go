@@ -16,8 +16,7 @@ func TestWriteReadDelete(t *testing.T) {
 
 	bundle, err := bundlr.OpenBundle(afero.NewOsFs(), "test.bundle")
 	assert.NoError(t, err, "OpenBundle(...)")
-	bundle = bundle.WithFileExtension("csv").
-		WithEncoderMaker(EncoderMaker).WithDecoderMaker(DecoderMaker)
+	bundle = ConfigBundle(bundle)
 
 	// Write
 	writer, err := bundle.WriterWithPartSize(2)

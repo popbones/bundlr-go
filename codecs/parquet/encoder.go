@@ -1,7 +1,6 @@
 package parquet
 
 import (
-	"github.com/spf13/afero"
 	"github.com/xitongsys/parquet-go/source"
 	"github.com/xitongsys/parquet-go/writer"
 
@@ -9,15 +8,15 @@ import (
 )
 
 type EncoderMaker struct {
-	fs        afero.Fs
+	bundle    *bundlr.Bundle
 	np        int64
 	prototype interface{}
 }
 
-func NewEncoderMaker(fs afero.Fs) *EncoderMaker {
+func NewEncoderMaker(b *bundlr.Bundle) *EncoderMaker {
 	return &EncoderMaker{
-		fs: fs,
-		np: 4,
+		bundle: b,
+		np:     4,
 	}
 }
 
@@ -27,7 +26,7 @@ func (m *EncoderMaker) WithPrototype(proto interface{}) *EncoderMaker {
 }
 
 func (m *EncoderMaker) Make(f bundlr.File) (bundlr.Encoder, error) {
-	pf := NewParquetFile(m.fs, f)
+	pf := NewParquetFile(m.bundle.FS(), f)
 	pw, err := writer.NewParquetWriter(pf, m.prototype, m.np)
 	if err != nil {
 		return nil, err
