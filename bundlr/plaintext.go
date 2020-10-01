@@ -3,6 +3,7 @@ package bundlr
 import (
 	"bufio"
 	"errors"
+	"io"
 )
 
 var plainTextEncoderMaker = (EncoderMakerFunc)(func(f File) (Encoder, error) {
@@ -45,9 +46,9 @@ var plainTextDecoderMaker = (DecoderMakerFunc)(func(f File) (Decoder, error) {
 				default:
 					return errors.New("unexpected dest")
 				}
-				return nil
+				return scanner.Err()
 			}
-			return scanner.Err()
+			return io.EOF
 		},
 		CloseFunc: func() error {
 			return f.Close()
