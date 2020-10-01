@@ -43,7 +43,7 @@ var plainTextDecoderMaker = (DecoderMakerFunc)(func(f File) (Decoder, error) {
 				case *string:
 					*v = scanner.Text()
 				default:
-					return errors.New("unexpected input")
+					return errors.New("unexpected dest")
 				}
 				return nil
 			}
