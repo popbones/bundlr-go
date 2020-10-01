@@ -32,7 +32,8 @@ func TestBundle_WriteReadDelete(t *testing.T) {
 	count := 0
 	for {
 		var s string
-		if err := reader.Read(&s); err == io.EOF {
+		err := reader.Read(&s)
+		if err == io.EOF {
 			break
 		}
 		assert.NoError(t, err, "reader.Read(&s)")
