@@ -5,13 +5,14 @@ import (
 	"io"
 	"testing"
 
+	"github.com/spf13/afero"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestBundle_WriteReadDelete(t *testing.T) {
 	const numOfRecords = 10 * 2
 
-	bundle, err := NewBundle("test.bundle")
+	bundle, err := NewBundle(afero.NewOsFs(), "test.bundle")
 	assert.NoError(t, err, "NewBundle(...)")
 
 	// Write
@@ -42,4 +43,5 @@ func TestBundle_WriteReadDelete(t *testing.T) {
 
 	// Delete
 	assert.NoError(t, bundle.Delete(), "bundle.Delete()")
+
 }

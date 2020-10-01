@@ -16,18 +16,15 @@ type Bundle struct {
 	rw           sync.RWMutex
 	fs           afero.Fs
 	dataFs       afero.Fs
-	Path         string
 	EncoderMaker EncoderMaker
 	DecoderMaker DecoderMaker
 }
 
-func NewBundle(path string) (*Bundle, error) {
-	// TODO: parse the path and figure out the source fs
-	fs := afero.NewBasePathFs(afero.NewOsFs(), path)
+func NewBundle(fs afero.Fs, path string) (*Bundle, error) {
+	fs = afero.NewBasePathFs(fs, path)
 	return &Bundle{
 		fs:           fs,
 		dataFs:       afero.NewBasePathFs(fs, DataDir),
-		Path:         path,
 		EncoderMaker: plainTextEncoderMaker,
 		DecoderMaker: plainTextDecoderMaker,
 	}, nil
