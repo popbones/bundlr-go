@@ -1,10 +1,9 @@
 package bundlr
 
-import "io"
+import (
+	"github.com/spf13/afero"
+)
 
 type File interface {
-	io.Reader
-	io.Writer
-	io.Seeker
-	io.Closer
+	afero.File
 }

@@ -83,6 +83,14 @@ func (b *Bundle) Delete() error {
 	return b.fs.RemoveAll("")
 }
 
+func (b *Bundle) FS() afero.Fs {
+	return b.fs
+}
+
+func (b *Bundle) DataFS() afero.Fs {
+	return b.dataFs
+}
+
 func (b *Bundle) lsDataDir() ([]os.FileInfo, error) {
 	return afero.ReadDir(b.fs, DataDir)
 }
