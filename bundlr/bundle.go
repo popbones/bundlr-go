@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	DataDir                   = "Data"
+	DataDir                   = "data"
 	DefaultDataFileNameFormat = "part-%05d.%s"
 	DefaultDataFileExt        = "dat"
 	DefaultPartSize           = 1000 * 1000
