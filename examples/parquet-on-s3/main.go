@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	s3 "github.com/fclairamb/afero-s3"
 
@@ -18,12 +19,12 @@ type Student struct {
 }
 
 func wrd(bundle *bundlr.Bundle) {
-	numOfRecords := 2 * 10
+	numOfRecords := 100 * 10
 
 	bundle = parquet.ConfigBundle(bundle, new(Student))
 
 	// Write
-	writer, err := bundle.WriterWithPartSize(2)
+	writer, err := bundle.WriterWithPartSize(100)
 	if err != nil {
 		panic(err)
 	}
@@ -53,7 +54,7 @@ func wrd(bundle *bundlr.Bundle) {
 	fmt.Println("reading records...")
 	count := 0
 	for {
-		st := make([]Student, 1)
+		st := make([]Student, 10)
 		err := reader.Read(&st)
 		if err == io.EOF {
 			break
@@ -62,8 +63,10 @@ func wrd(bundle *bundlr.Bundle) {
 			panic(err)
 		}
 
-		s := st[0]
-		fmt.Printf("%03d: %v\n", count, s)
+		for _, s := range st {
+			count++
+			fmt.Printf("%03d: %v\n", count, s)
+		}
 	}
 	fmt.Println("reading finished")
 	if err := reader.Close(); err != nil {
@@ -80,9 +83,17 @@ func main() {
 
 	bucket := flag.String("b", "", "bucket")
 	fileName := flag.String("n", "data.bundle", "bundle file name")
+	region := flag.String("r", "", "region")
+
+	flag.Parse()
+
+	fmt.Printf("file: %s/%s\n", *bucket, *fileName)
+	fmt.Printf("region: %s\n", *region)
 
 	// You create a session
-	sess, err := session.NewSession(nil)
+	sess, err := session.NewSession(&aws.Config{
+		Region: region,
+	})
 	if err != nil {
 		panic(err)
 	}

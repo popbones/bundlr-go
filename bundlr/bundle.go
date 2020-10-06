@@ -80,7 +80,7 @@ func (b *Bundle) Reader() (*Reader, error) {
 func (b *Bundle) Delete() error {
 	b.rw.Lock()
 	defer b.rw.Unlock()
-	return b.fs.RemoveAll("")
+	return b.FS().RemoveAll("")
 }
 
 func (b *Bundle) FS() afero.Fs {
@@ -92,7 +92,7 @@ func (b *Bundle) DataFS() afero.Fs {
 }
 
 func (b *Bundle) lsDataDir() ([]os.FileInfo, error) {
-	return afero.ReadDir(b.dataFs, "")
+	return afero.ReadDir(b.DataFS(), "")
 }
 
 func (b *Bundle) lsDataDirSorted() ([]os.FileInfo, error) {
@@ -106,5 +106,5 @@ func (b *Bundle) lsDataDirSorted() ([]os.FileInfo, error) {
 }
 
 func (b *Bundle) ensureDataDir() error {
-	return b.fs.MkdirAll(DataDir, 0700)
+	return b.FS().MkdirAll(DataDir, 0700)
 }

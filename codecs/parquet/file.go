@@ -1,6 +1,7 @@
 package parquet
 
 import (
+	"io"
 	"os"
 
 	"github.com/spf13/afero"
@@ -45,4 +46,31 @@ func (f *parquetFile) Create(name string) (source.ParquetFile, error) {
 		File: nf,
 		Fs:   f.Fs,
 	}, nil
+}
+
+func (f *parquetFile) Seek(offset int64, whence int) (int64, error) {
+	if whence == io.SeekEnd {
+		if offset == 0 {
+			return f.File.Seek(offset, whence)
+		}
+		// We need to determine how f.File.Seek actually implement the Seek function as io.Seeker does not really
+		// specify a behavior for negative offsets. We do this by seek twice and compare the result.
+		var seek1, seek2 int64
+		var err error
+		seek1, err = f.File.Seek(offset, whence)
+		if err != nil {
+			return seek1, err
+		}
+		seek2, err = f.File.Seek(-offset, whence)
+		if err != nil {
+			return seek2, err
+		}
+
+		if seek2 <= seek1 {
+			return seek2, err
+		} else {
+			return f.File.Seek(offset, whence)
+		}
+	}
+	return f.File.Seek(offset, whence)
 }

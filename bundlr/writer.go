@@ -32,8 +32,8 @@ func NewWriter(b *Bundle, n uint64) (*Writer, error) {
 	// Check whats the next file to write to
 	files, err := b.lsDataDirSorted()
 	if err != nil {
-		b.rw.Unlock()
-		return nil, err
+		//b.rw.Unlock()
+		//return nil, err
 	}
 
 	w := &Writer{
@@ -123,7 +123,7 @@ func (w *Writer) currentFileName() string {
 }
 
 func (w *Writer) nextFile() (File, error) {
-	f, err := w.bundle.dataFs.Create(w.nextFileName())
+	f, err := w.bundle.DataFS().Create(w.nextFileName())
 	return f, err
 }
 

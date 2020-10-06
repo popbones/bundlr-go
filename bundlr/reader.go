@@ -106,7 +106,7 @@ func (r *Reader) getNextDecoderIfNeeded() error {
 			return io.EOF
 		}
 
-		f, err := r.bundle.dataFs.Open(r.files[r.fileIndex].Name())
+		f, err := r.bundle.DataFS().Open(r.files[r.fileIndex].Name())
 		if err != nil {
 			return err
 		}
