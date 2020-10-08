@@ -43,17 +43,18 @@ func TestWriteReadDelete(t *testing.T) {
 
 	count := 0
 	for {
-		st := make([]Student, 1)
+		st := make([]Student, 4)
 		err := reader.Read(&st)
 		if err == io.EOF {
 			break
 		}
 		assert.NoError(t, err, "reader.Read(&s)")
 
-		s := st[0]
-		assert.Equal(t, int32(count%18), s.Age)
-		assert.Equal(t, fmt.Sprintf("student%d", count), s.Name)
-		count++
+		for _, s := range st {
+			assert.Equal(t, int32(count%18), s.Age)
+			assert.Equal(t, fmt.Sprintf("student%d", count), s.Name)
+			count++
+		}
 	}
 	assert.Equal(t, numOfRecords, count, "%d records written, but %d records read", numOfRecords, count)
 	assert.NoError(t, reader.Close(), "reader.Close()")
