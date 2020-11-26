@@ -1,6 +1,7 @@
 package bundlr
 
 import (
+	"encoding/json"
 	"os"
 	"sort"
 	"sync"
@@ -23,6 +24,7 @@ type Bundle struct {
 	decoderMaker  DecoderMaker
 	fileExtension string // Default file extension to use when writing
 	partSize      uint64 // Default partition size when writing
+	manifest      *Manifest
 }
 
 func OpenBundle(fs afero.Fs, path string) (*Bundle, error) {
@@ -107,4 +109,44 @@ func (b *Bundle) lsDataDirSorted() ([]os.FileInfo, error) {
 
 func (b *Bundle) ensureDataDir() error {
 	return b.FS().MkdirAll(DataDir, 0700)
+}
+
+func (b *Bundle) Manifest() (*Manifest, error) {
+	if b.manifest != nil {
+		return b.manifest, nil
+	}
+
+	manifestExists, err := afero.Exists(b.FS(), manifestFilename);
+	if err != nil {
+		return nil, err
+	}
+	if !manifestExists {
+		return &Manifest{}, nil
+	}
+
+	var manifest Manifest
+	rawManifest, err :=  afero.ReadFile(b.FS(), manifestFilename)
+	if err != nil {
+		return nil, err
+	}
+	if err := json.Unmarshal(rawManifest, &manifest); err != nil {
+		return nil, err
+	}
+
+	return &manifest, nil
+}
+
+func (b *Bundle) WriteManifest(manifest *Manifest) error {
+	rawManifest, err := json.Marshal(manifest)
+	if err != nil {
+		return err
+	}
+
+	if err := afero.WriteFile(b.FS(), manifestFilename, rawManifest, 600); err != nil {
+		return err
+	}
+
+	b.manifest = manifest
+
+	return nil
 }
