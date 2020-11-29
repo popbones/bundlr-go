@@ -2,6 +2,9 @@ package bundlr
 
 const (
 	manifestFilename = "manifest.json"
+
+	// Manifest schema version
+	ManifestVersion = "1.0"
 )
 
 // UserData allows to store any KV information
