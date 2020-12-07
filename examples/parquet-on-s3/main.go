@@ -22,6 +22,7 @@ func wrd(bundle *bundlr.Bundle) {
 	numOfRecords := 100 * 10
 
 	bundle = parquet.ConfigBundle(bundle, new(Student))
+	bundle = bundle.WithFilter([]string{"*.parquet"}, nil)
 
 	// Write
 	writer, err := bundle.WriterWithPartSize(100)

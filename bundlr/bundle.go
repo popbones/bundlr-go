@@ -25,6 +25,7 @@ type Bundle struct {
 	fileExtension string // Default file extension to use when writing
 	partSize      uint64 // Default partition size when writing
 	manifest      *Manifest
+	filter        SourceFilter
 }
 
 func OpenBundle(fs afero.Fs, path string) (*Bundle, error) {
@@ -94,7 +95,16 @@ func (b *Bundle) DataFS() afero.Fs {
 }
 
 func (b *Bundle) lsDataDir() ([]os.FileInfo, error) {
-	return afero.ReadDir(b.DataFS(), "")
+	files, err := afero.ReadDir(b.DataFS(), "")
+	if err != nil {
+		return files, err
+	}
+
+	if b.filter != nil {
+		files = b.filter.Filter(files)
+	}
+
+	return files, nil
 }
 
 func (b *Bundle) lsDataDirSorted() ([]os.FileInfo, error) {
@@ -116,7 +126,7 @@ func (b *Bundle) Manifest() (*Manifest, error) {
 		return b.manifest, nil
 	}
 
-	manifestExists, err := afero.Exists(b.FS(), manifestFilename);
+	manifestExists, err := afero.Exists(b.FS(), manifestFilename)
 	if err != nil {
 		return nil, err
 	}
@@ -125,7 +135,7 @@ func (b *Bundle) Manifest() (*Manifest, error) {
 	}
 
 	var manifest Manifest
-	rawManifest, err :=  afero.ReadFile(b.FS(), manifestFilename)
+	rawManifest, err := afero.ReadFile(b.FS(), manifestFilename)
 	if err != nil {
 		return nil, err
 	}
@@ -149,4 +159,11 @@ func (b *Bundle) WriteManifest(manifest *Manifest) error {
 	b.manifest = manifest
 
 	return nil
+}
+
+func (b *Bundle) WithFilter(allowList []string, denyList []string) *Bundle {
+	b.rw.Lock()
+	b.filter = NewFilter(allowList, denyList)
+	b.rw.Unlock()
+	return b
 }
