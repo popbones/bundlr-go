@@ -24,7 +24,7 @@ func NewFilter(allowList []string, denyList []string) SourceFilter {
 func (f filter) Filter(files []os.FileInfo) []os.FileInfo {
 	results := []os.FileInfo{}
 	for _, file := range files {
-		if ok, err := f.check(file.Name()); err != nil && ok {
+		if ok, err := f.check(file.Name()); err == nil && ok {
 			results = append(results, file)
 		}
 	}
