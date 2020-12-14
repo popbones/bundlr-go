@@ -3,6 +3,7 @@ package parquet
 import (
 	"io"
 	"os"
+	"path/filepath"
 
 	"github.com/spf13/afero"
 	"github.com/xitongsys/parquet-go/source"
@@ -24,7 +25,7 @@ func NewParquetFile(fs afero.Fs, file bundlr.File) source.ParquetFile {
 
 func (f *parquetFile) Open(name string) (source.ParquetFile, error) {
 	if name == "" {
-		name = f.File.Name()
+		_, name = filepath.Split(f.File.Name())
 	}
 
 	nf, err := f.OpenFile(name, os.O_RDONLY, 0)

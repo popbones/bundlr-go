@@ -29,7 +29,7 @@ func (m *DecoderMaker) WithPrototype(proto interface{}) *DecoderMaker {
 }
 
 func (m *DecoderMaker) Make(f bundlr.File) (bundlr.Decoder, error) {
-	pf := NewParquetFile(m.bundle.FS(), f)
+	pf := NewParquetFile(m.bundle.DataFS(), f)
 	pr, err := reader.NewParquetReader(pf, m.prototype, m.np)
 	if err != nil {
 		return nil, err

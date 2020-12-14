@@ -19,7 +19,8 @@ type Student struct {
 func TestWriteReadDelete(t *testing.T) {
 	const numOfRecords = 10 * 2
 
-	fs := afero.NewOsFs()
+	fs := afero.NewMemMapFs()
+	fs = afero.NewBasePathFs(fs, "testdata")
 	bundle, err := bundlr.OpenBundle(fs, "parquetTest.bundle")
 	assert.NoError(t, err, "OpenBundle(...)")
 	bundle = ConfigBundle(bundle, new(Student))
