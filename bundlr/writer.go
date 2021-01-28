@@ -46,6 +46,10 @@ func NewWriter(b *Bundle, n uint64) (*Writer, error) {
 		w.partIndex = parsePartIndexFromFileName(files[len(files)-1].Name())
 	}
 
+	if err := w.getNewEncoderIfNeeded(); err != nil {
+		return nil, err
+	}
+
 	return w, nil
 }
 

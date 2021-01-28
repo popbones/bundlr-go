@@ -63,3 +63,28 @@ func TestWriteReadDelete(t *testing.T) {
 	// Delete
 	assert.NoError(t, bundle.Delete(), "bundle.Delete()")
 }
+
+func TestWriteEmptyFile(t *testing.T) {
+	fs := afero.NewOsFs()
+	name := "parquetEmptyTest.bundle"
+	bundle, err := bundlr.OpenBundle(fs, name)
+	assert.NoError(t, err, "OpenBundle(...)")
+	bundle = ConfigBundle(bundle, new(Student))
+
+	writer, err := bundle.Writer()
+	assert.NoError(t, err, "bundle.Writer()")
+	assert.NoError(t, writer.Close(), "writer.Close()")
+
+	// Read
+	reader, err := bundle.Reader()
+	assert.NoError(t, err, "bundle.Reader()")
+
+	st := make([]Student, 0)
+	err = reader.Read(&st)
+	assert.Error(t, err)
+	assert.EqualError(t, io.EOF, err.Error())
+	assert.NoError(t, reader.Close(), "reader.Close()")
+
+	// Delete
+	assert.NoError(t, bundle.Delete(), "bundle.Delete()")
+}
