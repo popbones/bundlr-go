@@ -2,6 +2,7 @@ package parquet
 
 import (
 	"io"
+	"reflect"
 	"sync"
 
 	"github.com/xitongsys/parquet-go/reader"
@@ -56,7 +57,9 @@ func (e *Decoder) Decode(record interface{}) error {
 		return io.EOF
 	}
 	err := e.pr.Read(record)
-	e.count++
+	// parquet-go Read expect a slice and Read does not return io.EOF at the end of the file
+	// to correctly determine the read count we use reflection as a hack here.
+	e.count += int64(reflect.ValueOf(record).Elem().Len())
 	e.mu.Unlock()
 	return err
 }
